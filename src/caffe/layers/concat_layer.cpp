@@ -99,6 +99,9 @@ STUB_GPU(ConcatLayer);
 #endif
 
 INSTANTIATE_CLASS(ConcatLayer);
-REGISTER_LAYER_CLASS(Concat);
+// BEGIN SMG
+// See: https://stackoverflow.com/questions/42993870/caffe-layer-creation-failure-unknown-layer-type/43060851#43060851
+//REGISTER_LAYER_CLASS(Concat);
+// END SMG
 
 }  // namespace caffe

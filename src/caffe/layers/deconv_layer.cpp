@@ -79,6 +79,9 @@ STUB_GPU(DeconvolutionLayer);
 #endif
 
 INSTANTIATE_CLASS(DeconvolutionLayer);
-REGISTER_LAYER_CLASS(Deconvolution);
+// BEGIN SMG
+// See: https://stackoverflow.com/questions/42993870/caffe-layer-creation-failure-unknown-layer-type/43060851#43060851
+//REGISTER_LAYER_CLASS(Deconvolution);
+// END SMG
 
 }  // namespace caffe

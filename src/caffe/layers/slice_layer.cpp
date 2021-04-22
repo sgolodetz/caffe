@@ -119,6 +119,9 @@ STUB_GPU(SliceLayer);
 #endif
 
 INSTANTIATE_CLASS(SliceLayer);
-REGISTER_LAYER_CLASS(Slice);
+// BEGIN SMG
+// See: https://stackoverflow.com/questions/42993870/caffe-layer-creation-failure-unknown-layer-type/43060851#43060851
+//REGISTER_LAYER_CLASS(Slice);
+// END SMG
 
 }  // namespace caffe

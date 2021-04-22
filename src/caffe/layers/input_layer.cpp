@@ -22,6 +22,9 @@ void InputLayer<Dtype>::LayerSetUp(const vector<Blob<Dtype>*>& bottom,
 }
 
 INSTANTIATE_CLASS(InputLayer);
-REGISTER_LAYER_CLASS(Input);
+// BEGIN SMG
+// See: https://stackoverflow.com/questions/42993870/caffe-layer-creation-failure-unknown-layer-type/43060851#43060851
+//REGISTER_LAYER_CLASS(Input);
+// END SMG
 
 }  // namespace caffe

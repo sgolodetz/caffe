@@ -21,6 +21,9 @@ STUB_GPU(SilenceLayer);
 #endif
 
 INSTANTIATE_CLASS(SilenceLayer);
-REGISTER_LAYER_CLASS(Silence);
+// BEGIN SMG
+// See: https://stackoverflow.com/questions/42993870/caffe-layer-creation-failure-unknown-layer-type/43060851#43060851
+//REGISTER_LAYER_CLASS(Silence);
+// END SMG
 
 }  // namespace caffe

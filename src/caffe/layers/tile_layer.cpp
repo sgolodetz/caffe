@@ -56,6 +56,9 @@ STUB_GPU(TileLayer);
 #endif
 
 INSTANTIATE_CLASS(TileLayer);
-REGISTER_LAYER_CLASS(Tile);
+// BEGIN SMG
+// See: https://stackoverflow.com/questions/42993870/caffe-layer-creation-failure-unknown-layer-type/43060851#43060851
+//REGISTER_LAYER_CLASS(Tile);
+// END SMG
 
 }  // namespace caffe

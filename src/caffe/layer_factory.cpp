@@ -17,6 +17,18 @@
 #include "caffe/layers/tanh_layer.hpp"
 #include "caffe/proto/caffe.pb.h"
 
+// BEGIN SMG
+#include "caffe/cpm/layers/imresize_layer.hpp"
+#include "caffe/cpm/layers/nms_layer.hpp"
+#include "caffe/layers/concat_layer.hpp"
+#include "caffe/layers/deconv_layer.hpp"
+#include "caffe/layers/inner_product_layer.hpp"
+#include "caffe/layers/input_layer.hpp"
+#include "caffe/layers/silence_layer.hpp"
+#include "caffe/layers/slice_layer.hpp"
+#include "caffe/layers/tile_layer.hpp"
+// END SMG
+
 #ifdef USE_CUDNN
 #include "caffe/layers/cudnn_conv_layer.hpp"
 #include "caffe/layers/cudnn_lcn_layer.hpp"
@@ -26,6 +38,16 @@
 #include "caffe/layers/cudnn_sigmoid_layer.hpp"
 #include "caffe/layers/cudnn_softmax_layer.hpp"
 #include "caffe/layers/cudnn_tanh_layer.hpp"
+
+// BEGIN SMG
+#include "caffe/layers/cudnn_concat_layer.hpp"
+#include "caffe/layers/cudnn_deconv_layer.hpp"
+#include "caffe/layers/cudnn_inner_product_layer.hpp"
+#include "caffe/layers/cudnn_input_layer.hpp"
+#include "caffe/layers/cudnn_silence_layer.hpp"
+#include "caffe/layers/cudnn_slice_layer.hpp"
+#include "caffe/layers/cudnn_tile_layer.hpp"
+// END SMG
 #endif
 
 #ifdef WITH_PYTHON_LAYER
@@ -317,6 +339,226 @@ shared_ptr<Layer<Dtype> > GetTanHLayer(const LayerParameter& param) {
 }
 
 REGISTER_LAYER_CREATOR(TanH, GetTanHLayer);
+
+// BEGIN SMG
+// See: https://stackoverflow.com/questions/42993870/caffe-layer-creation-failure-unknown-layer-type/43060851#43060851
+
+// Get concat layer according to engine.
+template <typename Dtype>
+shared_ptr<Layer<Dtype> > GetConcatLayer(const LayerParameter& param) {
+    int engine = 0;
+#ifdef USE_CUDNN
+        engine = 1;
+#endif
+
+    if (engine == 0) {
+        return shared_ptr<Layer<Dtype> >(new ConcatLayer<Dtype>(param));
+#ifdef USE_CUDNN
+    }
+    else if (engine == 1) {
+        return shared_ptr<Layer<Dtype> >(new CuDNNConcatLayer<Dtype>(param));
+#endif
+    }
+    else {
+        LOG(FATAL) << "Layer " << param.name() << " has unknown engine.";
+        throw;  // Avoids missing return warning
+    }
+}
+
+REGISTER_LAYER_CREATOR(Concat, GetConcatLayer);
+
+// Get deconvolution layer according to engine.
+template <typename Dtype>
+shared_ptr<Layer<Dtype> > GetDeconvolutionLayer(const LayerParameter& param) {
+    int engine = 0;
+#ifdef USE_CUDNN
+        engine = 1;
+#endif
+
+    if (engine == 0) {
+        return shared_ptr<Layer<Dtype> >(new DeconvolutionLayer<Dtype>(param));
+#ifdef USE_CUDNN
+    }
+    else if (engine == 1) {
+        return shared_ptr<Layer<Dtype> >(new CuDNNDeconvolutionLayer<Dtype>(param));
+#endif
+    }
+    else {
+        LOG(FATAL) << "Layer " << param.name() << " has unknown engine.";
+        throw;  // Avoids missing return warning
+    }
+}
+
+REGISTER_LAYER_CREATOR(Deconvolution, GetDeconvolutionLayer);
+
+// Get innerproduct layer according to engine.
+template <typename Dtype>
+shared_ptr<Layer<Dtype> > GetInnerProductLayer(const LayerParameter& param) {
+    int engine = 0;
+#ifdef USE_CUDNN
+        engine = 1;
+#endif
+
+    if (engine == 0) {
+        return shared_ptr<Layer<Dtype> >(new InnerProductLayer<Dtype>(param));
+#ifdef USE_CUDNN
+    }
+    else if (engine == 1) {
+        return shared_ptr<Layer<Dtype> >(new CuDNNInnerProductLayer<Dtype>(param));
+#endif
+    }
+    else {
+        LOG(FATAL) << "Layer " << param.name() << " has unknown engine.";
+        throw;  // Avoids missing return warning
+    }
+}
+
+REGISTER_LAYER_CREATOR(InnerProduct, GetInnerProductLayer);
+
+// Get input layer according to engine.
+template <typename Dtype>
+shared_ptr<Layer<Dtype> > GetInputLayer(const LayerParameter& param) {
+    int engine = 0;
+#ifdef USE_CUDNN
+        engine = 1;
+#endif
+
+    if (engine == 0) {
+        return shared_ptr<Layer<Dtype> >(new InputLayer<Dtype>(param));
+#ifdef USE_CUDNN
+    }
+    else if (engine == 1) {
+        return shared_ptr<Layer<Dtype> >(new CuDNNInputLayer<Dtype>(param));
+#endif
+    }
+    else {
+        LOG(FATAL) << "Layer " << param.name() << " has unknown engine.";
+        throw;  // Avoids missing return warning
+    }
+}
+
+REGISTER_LAYER_CREATOR(Input, GetInputLayer);
+
+// Get imresize layer according to engine.
+template <typename Dtype>
+shared_ptr<Layer<Dtype> > GetImResizeLayer(const LayerParameter& param) {
+    int engine = 0;
+#ifdef USE_CUDNN
+        engine = 1;
+#endif
+
+    if (engine == 0) {
+        return shared_ptr<Layer<Dtype> >(new ImResizeLayer<Dtype>(param));
+#ifdef USE_CUDNN
+    }
+    else if (engine == 1) {
+        return shared_ptr<Layer<Dtype> >(new ImResizeLayer<Dtype>(param));
+#endif
+    }
+    else {
+        LOG(FATAL) << "Layer " << param.name() << " has unknown engine.";
+        throw;  // Avoids missing return warning
+    }
+}
+
+REGISTER_LAYER_CREATOR(ImResize, GetImResizeLayer);
+
+// Get nms layer according to engine.
+template <typename Dtype>
+shared_ptr<Layer<Dtype> > GetNmsLayer(const LayerParameter& param) {
+    int engine = 0;
+#ifdef USE_CUDNN
+        engine = 1;
+#endif
+
+    if (engine == 0) {
+        return shared_ptr<Layer<Dtype> >(new NmsLayer<Dtype>(param));
+#ifdef USE_CUDNN
+    }
+    else if (engine == 1) {
+        return shared_ptr<Layer<Dtype> >(new NmsLayer<Dtype>(param));
+#endif
+    }
+    else {
+        LOG(FATAL) << "Layer " << param.name() << " has unknown engine.";
+        throw;  // Avoids missing return warning
+    }
+}
+
+REGISTER_LAYER_CREATOR(Nms, GetNmsLayer);
+
+// Get silence layer according to engine.
+template <typename Dtype>
+shared_ptr<Layer<Dtype> > GetSilenceLayer(const LayerParameter& param) {
+    int engine = 0;
+#ifdef USE_CUDNN
+        engine = 1;
+#endif
+
+    if (engine == 0) {
+        return shared_ptr<Layer<Dtype> >(new SilenceLayer<Dtype>(param));
+#ifdef USE_CUDNN
+    }
+    else if (engine == 1) {
+        return shared_ptr<Layer<Dtype> >(new CuDNNSilenceLayer<Dtype>(param));
+#endif
+    }
+    else {
+        LOG(FATAL) << "Layer " << param.name() << " has unknown engine.";
+        throw;  // Avoids missing return warning
+    }
+}
+
+REGISTER_LAYER_CREATOR(Silence, GetSilenceLayer);
+
+// Get slice layer according to engine.
+template <typename Dtype>
+shared_ptr<Layer<Dtype> > GetSliceLayer(const LayerParameter& param) {
+    int engine = 0;
+#ifdef USE_CUDNN
+        engine = 1;
+#endif
+
+    if (engine == 0) {
+        return shared_ptr<Layer<Dtype> >(new SliceLayer<Dtype>(param));
+#ifdef USE_CUDNN
+    }
+    else if (engine == 1) {
+        return shared_ptr<Layer<Dtype> >(new CuDNNSliceLayer<Dtype>(param));
+#endif
+    }
+    else {
+        LOG(FATAL) << "Layer " << param.name() << " has unknown engine.";
+        throw;  // Avoids missing return warning
+    }
+}
+
+REGISTER_LAYER_CREATOR(Slice, GetSliceLayer);
+
+// Get tile layer according to engine.
+template <typename Dtype>
+shared_ptr<Layer<Dtype> > GetTileLayer(const LayerParameter& param) {
+    int engine = 0;
+#ifdef USE_CUDNN
+        engine = 1;
+#endif
+
+    if (engine == 0) {
+        return shared_ptr<Layer<Dtype> >(new TileLayer<Dtype>(param));
+#ifdef USE_CUDNN
+    }
+    else if (engine == 1) {
+        return shared_ptr<Layer<Dtype> >(new CuDNNTileLayer<Dtype>(param));
+#endif
+    }
+    else {
+        LOG(FATAL) << "Layer " << param.name() << " has unknown engine.";
+        throw;  // Avoids missing return warning
+    }
+}
+
+REGISTER_LAYER_CREATOR(Tile, GetTileLayer);
+// END SMG
 
 #ifdef WITH_PYTHON_LAYER
 template <typename Dtype>
